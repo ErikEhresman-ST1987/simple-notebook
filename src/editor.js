@@ -8,7 +8,9 @@ export function createEditor(host, initialDocument, onChange) {
   return {
     toggleBold() {
       host.focus({ preventScroll: true });
-      document.execCommand("bold", false);
+      host.classList.add("native-bold-command");
+      try { document.execCommand("bold", false); }
+      finally { host.classList.remove("native-bold-command"); }
       onChange(readDocument(host));
     },
     toggleBullet() {
