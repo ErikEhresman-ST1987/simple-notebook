@@ -23,7 +23,9 @@ It includes multiple notes, optional titles, first-line fallback, normal text, B
 
 v0.2 added the verified data-safety increment: versioned whole-notebook JSON Backup & Restore, Last Backup, reversible deletion through Recently Deleted, restore, permanent second deletion, and Delete All.
 
-v0.3 adds simple bullet blocks through the existing structured document model and native editor boundary. Search, pinning, PDF export, additional text styles, and appearance settings remain outside this increment.
+v0.3 added verified simple bullet blocks through the existing structured document model and native editor boundary. Its iPad persistence hardening retained native Bold and prevents unsupported browser markup from silently omitting visible text.
+
+v0.4 adds individual-note PDF export through the native browser/iPad print workflow. Printable content is rendered from the structured note model behind a separate PDF boundary; no PDF dependency or alternate persistence path is introduced. This increment remains subject to real-iPad verification.
 
 ## Architecture and ownership
 
@@ -31,6 +33,7 @@ v0.3 adds simple bullet blocks through the existing structured document model an
 - `src/note-model.js` — the structured document model owns content meaning and validation.
 - `src/editor.js` — translates between native browser editing and the structured model; editor HTML is never authoritative storage.
 - `src/persistence.js` — centralizes debounced and immediate save checkpoints.
+- `src/pdf.js` — renders individual notes for the native print-to-PDF workflow without owning note data.
 - `src/backup.js` — owns the portable backup format and complete pre-restore validation.
 - `src/data-view.js` — presents backup, restore, and Recently Deleted controls without owning notebook data.
 - `src/app.js` — navigation and view coordination.

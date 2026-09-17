@@ -2,6 +2,7 @@ import { getNote, listNotes, moveNoteToDeleted, putNote } from "./db.js";
 import { createDataView } from "./data-view.js";
 import { createEditor } from "./editor.js";
 import { createNote, displayTitle, previewText } from "./note-model.js";
+import { printNote } from "./pdf.js";
 import { createPersistence } from "./persistence.js";
 
 const app = document.querySelector("#app");
@@ -77,12 +78,15 @@ async function renderEditor(noteId) {
   const bulletButton = button("•", "format-button bullet-button");
   bulletButton.setAttribute("aria-label", "Toggle bullet list");
   bulletButton.title = "Bullets";
+  const pdfButton = button("PDF", "pdf-button");
+  pdfButton.setAttribute("aria-label", "Export note as PDF");
+  pdfButton.title = "Export as PDF";
   const deleteButton = button("Delete", "delete-note-button");
   deleteButton.setAttribute("aria-label", "Move note to Recently Deleted");
   const status = element("span", "save-status", "Saved");
   status.setAttribute("role", "status");
   const actions = element("div", "toolbar-actions");
-  actions.append(boldButton, bulletButton, deleteButton, status);
+  actions.append(boldButton, bulletButton, pdfButton, deleteButton, status);
   toolbar.append(backButton, actions);
 
   const paper = element("article", "paper");
@@ -134,6 +138,17 @@ async function renderEditor(noteId) {
   boldButton.addEventListener("click", () => editor.toggleBold());
   bulletButton.addEventListener("pointerdown", (event) => event.preventDefault());
   bulletButton.addEventListener("click", () => editor.toggleBullet());
+  pdfButton.addEventListener("click", async () => {
+    pdfButton.disabled = true;
+    try {
+      releaseEditorFocus();
+      await persistence.flush();
+      printNote(draft);
+    } catch {
+      status.textContent = "PDF export failed — note retained";
+      status.dataset.state = "error";
+    } finally { pdfButton.disabled = false; }
+  });
   deleteButton.addEventListener("click", async () => {
     if (!confirm(`Move “${displayTitle(draft)}” to Recently Deleted?`)) return;
     deleteButton.disabled = true;
