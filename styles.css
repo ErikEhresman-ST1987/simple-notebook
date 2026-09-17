@@ -66,6 +66,11 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
   min-height: 62vh; outline: none; font-family: Georgia, "Times New Roman", serif; font-size: 1.12rem;
   line-height: 1.72; overflow-wrap: anywhere; caret-color: var(--accent);
 }
+.writing-surface strong,
+.writing-surface b {
+  font-weight: inherit;
+  text-shadow: .4px 0 currentColor, -.4px 0 currentColor;
+}
 .writing-surface > div { min-height: 1.72em; }
 .writing-surface:empty::before { content: attr(data-placeholder); color: #a3a7a3; pointer-events: none; }
 .error-state { max-width: 560px; margin-inline: auto; padding: 20vh 30px 40px; text-align: center; }
