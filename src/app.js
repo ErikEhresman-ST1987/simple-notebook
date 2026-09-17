@@ -118,7 +118,16 @@ async function renderEditor(noteId) {
       status.dataset.state = state;
     },
   });
-  editor = createEditor(editorHost, draft.document, (documentModel) => { draft.document = documentModel; persistence.markDirty(); });
+  editor = createEditor(
+    editorHost,
+    draft.document,
+    (documentModel) => { draft.document = documentModel; persistence.markDirty(); },
+    () => {
+      persistence.markDirty();
+      status.textContent = "Save blocked — text retained";
+      status.dataset.state = "error";
+    },
+  );
 
   title.addEventListener("input", persistence.markDirty);
   boldButton.addEventListener("pointerdown", (event) => event.preventDefault());
