@@ -1,0 +1,16 @@
+{
+  "name": "Simple Notebook",
+  "short_name": "Notebook",
+  "description": "A quiet, offline-first personal notebook.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#f7f5ef",
+  "icons": [{
+    "src": "icons/notebook.svg",
+    "sizes": "any",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
+}
