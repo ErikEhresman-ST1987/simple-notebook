@@ -74,12 +74,15 @@ async function renderEditor(noteId) {
   const boldButton = button("B", "format-button");
   boldButton.setAttribute("aria-label", "Bold selected text");
   boldButton.title = "Bold";
+  const bulletButton = button("•", "format-button bullet-button");
+  bulletButton.setAttribute("aria-label", "Toggle bullet list");
+  bulletButton.title = "Bullets";
   const deleteButton = button("Delete", "delete-note-button");
   deleteButton.setAttribute("aria-label", "Move note to Recently Deleted");
   const status = element("span", "save-status", "Saved");
   status.setAttribute("role", "status");
   const actions = element("div", "toolbar-actions");
-  actions.append(boldButton, deleteButton, status);
+  actions.append(boldButton, bulletButton, deleteButton, status);
   toolbar.append(backButton, actions);
 
   const paper = element("article", "paper");
@@ -120,6 +123,8 @@ async function renderEditor(noteId) {
   title.addEventListener("input", persistence.markDirty);
   boldButton.addEventListener("pointerdown", (event) => event.preventDefault());
   boldButton.addEventListener("click", () => editor.toggleBold());
+  bulletButton.addEventListener("pointerdown", (event) => event.preventDefault());
+  bulletButton.addEventListener("click", () => editor.toggleBullet());
   deleteButton.addEventListener("click", async () => {
     if (!confirm(`Move “${displayTitle(draft)}” to Recently Deleted?`)) return;
     deleteButton.disabled = true;

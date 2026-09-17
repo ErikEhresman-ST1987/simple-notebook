@@ -53,6 +53,7 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
 .toolbar-actions { display: flex; align-items: center; gap: 12px; }
 .format-button { width: 44px; color: var(--ink); background: #eeece5; font-family: Georgia, serif; font-size: 1.08rem; font-weight: 800; }
 .format-button:active { background: #dfddd5; }
+.bullet-button { font-size: 1.65rem; line-height: 1; }
 .delete-note-button { padding: 0 11px; color: var(--danger); background: transparent; font-size: .84rem; font-weight: 680; }
 .save-status { min-width: 57px; color: var(--muted); font-size: .78rem; text-align: right; }
 .save-status[data-state="error"] { color: var(--danger); }
@@ -76,6 +77,8 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
   text-shadow: .4px 0 currentColor, -.4px 0 currentColor;
 }
 .writing-surface > div { min-height: 1.72em; }
+.writing-surface ul { margin: 0; padding-left: 1.45em; }
+.writing-surface li { min-height: 1.72em; padding-left: .18em; }
 .writing-surface:empty::before { content: attr(data-placeholder); color: #a3a7a3; pointer-events: none; }
 .data-view { width: min(100%, 920px); min-height: 100vh; margin-inline: auto; padding: calc(22px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); }
 .data-header { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 18px; margin-bottom: 30px; }

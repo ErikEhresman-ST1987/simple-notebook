@@ -20,6 +20,13 @@ test("a complete backup round-trips active and deleted notes", () => {
   assert.deepEqual(parsed.notebook.notes, [note(), deleted]);
 });
 
+test("backups preserve bullet blocks", () => {
+  const listed = note();
+  listed.document.blocks.push({ type: "bullet", spans: [{ text: "A bullet", bold: true }] });
+  const parsed = parseBackup(serializeBackup(createBackup([listed])));
+  assert.deepEqual(parsed.notebook.notes[0].document.blocks[1], { type: "bullet", spans: [{ text: "A bullet", bold: true }] });
+});
+
 test("malformed JSON is rejected before restore", () => {
   assert.throws(() => parseBackup("{not-json"), /not valid JSON/);
 });

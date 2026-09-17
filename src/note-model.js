@@ -16,8 +16,8 @@ export function createNote(now = new Date()) {
 export function normalizeDocument(value) {
   if (!value || value.version !== DOCUMENT_VERSION || !Array.isArray(value.blocks)) return emptyDocument();
   const blocks = value.blocks
-    .filter((block) => block?.type === "paragraph" && Array.isArray(block.spans))
-    .map((block) => ({ type: "paragraph", spans: normalizeSpans(block.spans) }));
+    .filter((block) => (block?.type === "paragraph" || block?.type === "bullet") && Array.isArray(block.spans))
+    .map((block) => ({ type: block.type, spans: normalizeSpans(block.spans) }));
   return { version: DOCUMENT_VERSION, blocks: blocks.length ? blocks : [emptyParagraph()] };
 }
 
@@ -67,7 +67,7 @@ export function isValidDocument(document) {
     Array.isArray(document.blocks) &&
     document.blocks.length > 0 &&
     document.blocks.every((block) =>
-      block?.type === "paragraph" &&
+      (block?.type === "paragraph" || block?.type === "bullet") &&
       Array.isArray(block.spans) &&
       block.spans.length > 0 &&
       block.spans.every((span) => span && typeof span.text === "string" && typeof span.bold === "boolean")

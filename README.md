@@ -21,7 +21,9 @@ v0.1 proved one complete loop on the real iPad:
 
 It includes multiple notes, optional titles, first-line fallback, normal text, Bold, IndexedDB persistence, lifecycle save checkpoints, an installable offline shell, and basic responsive layouts. The complete loop, offline use, persistence, Apple Pencil input, and real-use comfort passed verification in September 2026.
 
-v0.2 adds the next justified data-safety increment: versioned whole-notebook JSON Backup & Restore, Last Backup, reversible deletion through Recently Deleted, restore, permanent second deletion, and Delete All. Search, pinning, PDF export, additional text styles, bullets, and appearance settings remain outside this increment.
+v0.2 added the verified data-safety increment: versioned whole-notebook JSON Backup & Restore, Last Backup, reversible deletion through Recently Deleted, restore, permanent second deletion, and Delete All.
+
+v0.3 adds simple bullet blocks through the existing structured document model and native editor boundary. Search, pinning, PDF export, additional text styles, and appearance settings remain outside this increment.
 
 ## Architecture and ownership
 
