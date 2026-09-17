@@ -114,6 +114,7 @@ async function renderEditor(noteId) {
   document.addEventListener("visibilitychange", onVisibility);
   window.addEventListener("pagehide", checkpoint);
   activeCleanup = async () => {
+    releaseEditorFocus();
     title.removeEventListener("input", persistence.markDirty);
     document.removeEventListener("visibilitychange", onVisibility);
     window.removeEventListener("pagehide", checkpoint);
@@ -136,6 +137,10 @@ function noteCard(note) {
 
 function navigateToNote(id) { history.pushState({}, "", `?note=${encodeURIComponent(id)}`); void route(); }
 function navigateHome() { history.pushState({}, "", location.pathname); void route(); }
+function releaseEditorFocus() {
+  const focused = document.activeElement;
+  if (focused instanceof HTMLElement && focused !== document.body) focused.blur();
+}
 function formatDate(iso) { return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: new Date(iso).getFullYear() === new Date().getFullYear() ? undefined : "numeric" }).format(new Date(iso)); }
 function element(tag, className = "", text = "") { const node = document.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node; }
 function button(text, className) { const node = element("button", className, text); node.type = "button"; return node; }

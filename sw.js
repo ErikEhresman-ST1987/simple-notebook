@@ -1,4 +1,4 @@
-const CACHE_NAME = "simple-notebook-shell-v1";
+const CACHE_NAME = "simple-notebook-shell-v2";
 const SHELL = ["./", "./index.html", "./styles.css", "./manifest.webmanifest", "./icons/notebook.svg", "./src/app.js", "./src/db.js", "./src/editor.js", "./src/note-model.js", "./src/persistence.js"];
 
 self.addEventListener("install", (event) => { event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL))); });
