@@ -49,5 +49,32 @@ export function previewText(note) {
 }
 
 export function isValidStoredNote(note) {
-  return Boolean(note && typeof note.id === "string" && typeof note.title === "string" && typeof note.createdAt === "string" && typeof note.updatedAt === "string" && note.document?.version === DOCUMENT_VERSION);
+  return Boolean(
+    note &&
+    typeof note.id === "string" && note.id.length > 0 &&
+    typeof note.title === "string" &&
+    isTimestamp(note.createdAt) &&
+    isTimestamp(note.updatedAt) &&
+    (note.deletedAt === undefined || isTimestamp(note.deletedAt)) &&
+    isValidDocument(note.document)
+  );
+}
+
+export function isValidDocument(document) {
+  return Boolean(
+    document &&
+    document.version === DOCUMENT_VERSION &&
+    Array.isArray(document.blocks) &&
+    document.blocks.length > 0 &&
+    document.blocks.every((block) =>
+      block?.type === "paragraph" &&
+      Array.isArray(block.spans) &&
+      block.spans.length > 0 &&
+      block.spans.every((span) => span && typeof span.text === "string" && typeof span.bold === "boolean")
+    )
+  );
+}
+
+function isTimestamp(value) {
+  return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }

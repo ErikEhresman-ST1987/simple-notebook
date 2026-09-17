@@ -1,4 +1,5 @@
-import { getNote, listNotes, putNote } from "./db.js";
+import { getNote, listNotes, moveNoteToDeleted, putNote } from "./db.js";
+import { createDataView } from "./data-view.js";
 import { createEditor } from "./editor.js";
 import { createNote, displayTitle, previewText } from "./note-model.js";
 import { createPersistence } from "./persistence.js";
@@ -12,8 +13,13 @@ registerServiceWorker();
 async function route() {
   await activeCleanup();
   activeCleanup = async () => {};
-  const noteId = new URL(location.href).searchParams.get("note");
-  try { if (noteId) await renderEditor(noteId); else await renderNotebook(); }
+  const parameters = new URL(location.href).searchParams;
+  const noteId = parameters.get("note");
+  try {
+    if (noteId) await renderEditor(noteId);
+    else if (parameters.get("view") === "data") await renderData();
+    else await renderNotebook();
+  }
   catch (error) { renderError(error); }
 }
 
@@ -24,6 +30,9 @@ async function renderNotebook() {
   const header = element("header", "notebook-header");
   const headingWrap = element("div");
   headingWrap.append(element("p", "eyebrow", "Simple Notebook"), element("h1", "", "Notebook"));
+  const headerActions = element("div", "notebook-actions");
+  const dataButton = button("Data & Recovery", "secondary-button");
+  dataButton.addEventListener("click", navigateData);
   const newButton = button("New Note", "primary-button");
   newButton.addEventListener("click", async () => {
     newButton.disabled = true;
@@ -31,7 +40,8 @@ async function renderNotebook() {
     await putNote(note);
     navigateToNote(note.id);
   });
-  header.append(headingWrap, newButton);
+  headerActions.append(dataButton, newButton);
+  header.append(headingWrap, headerActions);
   view.append(header);
 
   if (!notes.length) {
@@ -47,6 +57,11 @@ async function renderNotebook() {
   app.replaceChildren(view);
 }
 
+async function renderData() {
+  document.title = "Data & Recovery — Simple Notebook";
+  app.replaceChildren(await createDataView({ onBack: navigateHome, onRestoreComplete: navigateAfterDataChange }));
+}
+
 async function renderEditor(noteId) {
   const note = await getNote(noteId);
   if (!note) { history.replaceState({}, "", location.pathname); await renderNotebook(); return; }
@@ -59,10 +74,12 @@ async function renderEditor(noteId) {
   const boldButton = button("B", "format-button");
   boldButton.setAttribute("aria-label", "Bold selected text");
   boldButton.title = "Bold";
+  const deleteButton = button("Delete", "delete-note-button");
+  deleteButton.setAttribute("aria-label", "Move note to Recently Deleted");
   const status = element("span", "save-status", "Saved");
   status.setAttribute("role", "status");
   const actions = element("div", "toolbar-actions");
-  actions.append(boldButton, status);
+  actions.append(boldButton, deleteButton, status);
   toolbar.append(backButton, actions);
 
   const paper = element("article", "paper");
@@ -103,6 +120,19 @@ async function renderEditor(noteId) {
   title.addEventListener("input", persistence.markDirty);
   boldButton.addEventListener("pointerdown", (event) => event.preventDefault());
   boldButton.addEventListener("click", () => editor.toggleBold());
+  deleteButton.addEventListener("click", async () => {
+    if (!confirm(`Move “${displayTitle(draft)}” to Recently Deleted?`)) return;
+    deleteButton.disabled = true;
+    try {
+      await persistence.flush();
+      await moveNoteToDeleted(draft.id);
+      navigateHome();
+    } catch {
+      deleteButton.disabled = false;
+      status.textContent = "Delete failed — note retained";
+      status.dataset.state = "error";
+    }
+  });
   backButton.addEventListener("click", async () => {
     backButton.disabled = true;
     try { await persistence.flush(); navigateHome(); }
@@ -137,6 +167,11 @@ function noteCard(note) {
 
 function navigateToNote(id) { history.pushState({}, "", `?note=${encodeURIComponent(id)}`); void route(); }
 function navigateHome() { history.pushState({}, "", location.pathname); void route(); }
+function navigateData() { history.pushState({}, "", "?view=data"); void route(); }
+function navigateAfterDataChange(destination = "home") {
+  history.replaceState({}, "", destination === "data" ? "?view=data" : location.pathname);
+  void route();
+}
 function releaseEditorFocus() {
   const focused = document.activeElement;
   if (focused instanceof HTMLElement && focused !== document.body) focused.blur();

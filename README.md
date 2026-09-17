@@ -13,13 +13,15 @@ Simple Notebook is a quiet, offline-first personal notebook designed primarily f
 
 Simple Notebook is not a cloud service, collaborative editor, drawing app, or miniature word processor. Do not add accounts, synchronization, folders, tags, images, attachments, stored handwriting, tables, custom themes, AI features, or arbitrary rich text.
 
-## v0.1 boundary
+## Current verified foundation
 
-v0.1 proves one complete loop:
+v0.1 proved one complete loop on the real iPad:
 
 > Open Notebook → Create Note → Write → Autosave → Return to Notebook → Reopen Note → Continue Writing
 
-It includes multiple notes, optional titles, first-line fallback, normal text, Bold, IndexedDB persistence, lifecycle save checkpoints, an installable offline shell, and basic responsive layouts. Search, pinning, deletion, backup/restore, PDF export, additional text styles, bullets, and appearance settings remain intentionally excluded until the core loop passes real iPad use.
+It includes multiple notes, optional titles, first-line fallback, normal text, Bold, IndexedDB persistence, lifecycle save checkpoints, an installable offline shell, and basic responsive layouts. The complete loop, offline use, persistence, Apple Pencil input, and real-use comfort passed verification in September 2026.
+
+v0.2 adds the next justified data-safety increment: versioned whole-notebook JSON Backup & Restore, Last Backup, reversible deletion through Recently Deleted, restore, permanent second deletion, and Delete All. Search, pinning, PDF export, additional text styles, bullets, and appearance settings remain outside this increment.
 
 ## Architecture and ownership
 
@@ -27,6 +29,8 @@ It includes multiple notes, optional titles, first-line fallback, normal text, B
 - `src/note-model.js` — the structured document model owns content meaning and validation.
 - `src/editor.js` — translates between native browser editing and the structured model; editor HTML is never authoritative storage.
 - `src/persistence.js` — centralizes debounced and immediate save checkpoints.
+- `src/backup.js` — owns the portable backup format and complete pre-restore validation.
+- `src/data-view.js` — presents backup, restore, and Recently Deleted controls without owning notebook data.
 - `src/app.js` — navigation and view coordination.
 - `sw.js` — owns application-shell caching only; it never handles notebook data.
 
