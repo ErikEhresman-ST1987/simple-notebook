@@ -71,16 +71,6 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
   min-height: 62vh; outline: none; font-family: Georgia, "Times New Roman", serif; font-size: 1.12rem;
   line-height: 1.72; overflow-wrap: anywhere; caret-color: var(--accent);
 }
-.writing-surface strong,
-.writing-surface b {
-  font-weight: inherit;
-  text-shadow: .4px 0 currentColor, -.4px 0 currentColor;
-}
-.writing-surface.native-bold-command strong,
-.writing-surface.native-bold-command b {
-  font-weight: 700;
-  text-shadow: none;
-}
 .writing-surface > div { min-height: 1.72em; }
 .writing-surface ul { margin: 0; padding-left: 1.45em; }
 .writing-surface li { min-height: 1.72em; padding-left: .18em; }

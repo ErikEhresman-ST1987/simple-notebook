@@ -63,3 +63,21 @@ test("wrapped nested lists retain both parent and child text", () => {
     { type: "bullet", spans: [{ text: "Child", bold: false }] },
   ]);
 });
+
+test("bold wrappers inserted between a list and its item retain the item", () => {
+  const tree = host([element("ul", [element("strong", [element("li", [text("Bold item")])])])]);
+  assert.deepEqual(readDocument(tree).blocks, [
+    { type: "bullet", spans: [{ text: "Bold item", bold: true }] },
+  ]);
+});
+
+test("styled wrappers inserted between a list and its items retain every item", () => {
+  const tree = host([element("ul", [element("span", [
+    element("li", [text("First")]),
+    element("li", [text("Second")]),
+  ], { fontWeight: "700" })])]);
+  assert.deepEqual(readDocument(tree).blocks, [
+    { type: "bullet", spans: [{ text: "First", bold: true }] },
+    { type: "bullet", spans: [{ text: "Second", bold: true }] },
+  ]);
+});

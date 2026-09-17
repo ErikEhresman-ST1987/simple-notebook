@@ -12,9 +12,7 @@ export function createEditor(host, initialDocument, onChange, onReadError = () =
   return {
     toggleBold() {
       host.focus({ preventScroll: true });
-      host.classList.add("native-bold-command");
-      try { document.execCommand("bold", false); }
-      finally { host.classList.remove("native-bold-command"); }
+      document.execCommand("bold", false);
       emitChange();
     },
     toggleBullet() {
@@ -48,7 +46,7 @@ function extractNode(node, blocks, fallbackType, inheritedBold) {
   if (node.nodeName === "BR") { blocks.push(emptyBlock(fallbackType)); return; }
   const bold = inheritedBold || isBoldElement(node);
   if (node.nodeName === "UL" || node.nodeName === "OL") {
-    for (const child of node.childNodes) if (child.nodeName === "LI") extractListItem(child, blocks, bold);
+    for (const entry of findOwnedListItems(node, bold)) extractListItem(entry.item, blocks, entry.inheritedBold);
     return;
   }
   if (node.nodeName === "LI") { extractListItem(node, blocks, bold); return; }
@@ -57,6 +55,19 @@ function extractNode(node, blocks, fallbackType, inheritedBold) {
     return;
   }
   blocks.push({ type: fallbackType, spans: collectSpans([node], inheritedBold) });
+}
+
+function findOwnedListItems(list, inheritedBold) {
+  const items = [];
+  const visit = (container, bold) => {
+    for (const child of container.childNodes) {
+      const childBold = bold || isBoldElement(child);
+      if (child.nodeName === "LI") items.push({ item: child, inheritedBold: childBold });
+      else if (child.nodeName !== "UL" && child.nodeName !== "OL" && child.childNodes) visit(child, childBold);
+    }
+  };
+  visit(list, inheritedBold);
+  return items;
 }
 
 function extractListItem(item, blocks, inheritedBold) {
