@@ -47,10 +47,8 @@ export function printNote(note, documentRef = document, print = () => window.pri
   }
 
   documentRef.body.append(article);
-  const cleanup = () => article.remove();
-  window.addEventListener("afterprint", cleanup, { once: true });
   try { print(); }
-  catch (error) { cleanup(); throw error; }
+  catch (error) { article.remove(); throw error; }
 }
 
 function appendSpans(documentRef, container, spans) {
