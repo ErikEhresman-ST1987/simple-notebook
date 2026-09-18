@@ -27,6 +27,8 @@ v0.3 added verified simple bullet blocks through the existing structured documen
 
 v0.4 adds individual-note PDF export through the native browser/iPad print workflow. Printable content is rendered from the structured note model behind a separate PDF boundary; no PDF dependency or alternate persistence path is introduced. v0.4.2 uses a visible in-app document preview before invoking iPadOS printing so WebKit has completed layout before it builds the native print preview. This increment remains subject to real-iPad verification.
 
+v0.5 adds direct, case-insensitive partial Search across active-note titles and complete structured note text. Search operates on the authoritative notes already loaded for the Notebook screen and adds no index, dependency, alternate database, or persisted search state. This increment remains subject to real-iPad verification.
+
 ## Architecture and ownership
 
 - `src/db.js` — IndexedDB is the authoritative live notebook store.
@@ -34,6 +36,7 @@ v0.4 adds individual-note PDF export through the native browser/iPad print workf
 - `src/editor.js` — translates between native browser editing and the structured model; editor HTML is never authoritative storage.
 - `src/persistence.js` — centralizes debounced and immediate save checkpoints.
 - `src/pdf.js` — renders individual notes for the native print-to-PDF workflow without owning note data.
+- `src/search.js` — filters active authoritative notes for the Notebook screen without owning or indexing data.
 - `src/backup.js` — owns the portable backup format and complete pre-restore validation.
 - `src/data-view.js` — presents backup, restore, and Recently Deleted controls without owning notebook data.
 - `src/app.js` — navigation and view coordination.

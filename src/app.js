@@ -4,6 +4,7 @@ import { createEditor } from "./editor.js";
 import { createNote, displayTitle, previewText } from "./note-model.js";
 import { openPrintPreview } from "./pdf.js";
 import { createPersistence } from "./persistence.js";
+import { searchNotes } from "./search.js";
 
 const app = document.querySelector("#app");
 let activeCleanup = async () => {};
@@ -50,10 +51,33 @@ async function renderNotebook() {
     empty.append(element("h2", "", "A quiet place to write"), element("p", "", "Create a note and begin writing. It saves automatically on this device."));
     view.append(empty);
   } else {
+    const searchRegion = element("div", "search-region");
+    const searchLabel = element("label", "visually-hidden", "Search notes");
+    searchLabel.htmlFor = "note-search";
+    const searchInput = document.createElement("input");
+    searchInput.id = "note-search";
+    searchInput.className = "search-input";
+    searchInput.type = "search";
+    searchInput.placeholder = "Search notes";
+    searchInput.autocomplete = "off";
+    searchInput.setAttribute("enterkeyhint", "search");
+    const resultStatus = element("p", "search-status");
+    resultStatus.setAttribute("role", "status");
+    searchRegion.append(searchLabel, searchInput, resultStatus);
     const list = element("div", "note-list");
     list.setAttribute("role", "list");
-    for (const note of notes) list.append(noteCard(note));
-    view.append(list);
+    const renderResults = () => {
+      const results = searchNotes(notes, searchInput.value);
+      list.replaceChildren(...results.map(noteCard));
+      const searching = searchInput.value.trim().length > 0;
+      resultStatus.textContent = searching
+        ? results.length ? `${results.length} note${results.length === 1 ? "" : "s"} found` : "No notes found"
+        : "";
+      list.hidden = results.length === 0;
+    };
+    searchInput.addEventListener("input", renderResults);
+    renderResults();
+    view.append(searchRegion, list);
   }
   app.replaceChildren(view);
 }

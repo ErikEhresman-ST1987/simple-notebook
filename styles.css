@@ -28,6 +28,14 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
 .secondary-button { padding: 0 16px; border: 1px solid var(--line); color: var(--ink); background: var(--paper); font-weight: 680; }
 .danger-button { padding: 0 16px; border: 1px solid rgb(156 61 61 / 28%); color: var(--danger); background: #fffafa; font-weight: 680; }
 .notebook-actions, .data-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.search-region { margin-bottom: 18px; }
+.search-input {
+  width: 100%; min-height: 48px; padding: 0 16px; border: 1px solid var(--line); border-radius: 13px;
+  outline: none; color: var(--ink); background: var(--paper); font-size: 1rem; box-shadow: 0 2px 10px rgb(42 48 45 / 3%);
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: rgb(49 95 89 / 55%); box-shadow: 0 0 0 3px rgb(49 95 89 / 10%); }
+.search-status { min-height: 1.25em; margin: 7px 3px 0; color: var(--muted); font-size: .82rem; }
 .note-list { display: grid; gap: 12px; }
 .note-card {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "title date" "preview date"; gap: 5px 18px;
