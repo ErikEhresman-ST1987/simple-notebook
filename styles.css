@@ -76,7 +76,27 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
 .writing-surface ul { margin: 0; padding-left: 1.45em; }
 .writing-surface li { min-height: 1.72em; padding-left: .18em; }
 .writing-surface:empty::before { content: attr(data-placeholder); color: #a3a7a3; pointer-events: none; }
-.print-note { display: none; }
+.pdf-preview {
+  position: fixed; z-index: 20; inset: 0; overflow-y: auto; color: var(--ink); background: var(--canvas);
+  padding-bottom: calc(48px + env(safe-area-inset-bottom));
+}
+.pdf-preview-toolbar {
+  position: sticky; z-index: 1; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: calc(16px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) 16px max(24px, env(safe-area-inset-left));
+  border-bottom: 1px solid var(--line); background: rgb(247 245 239 / 96%); backdrop-filter: blur(18px);
+}
+.pdf-preview-toolbar h2 { margin: 0 0 3px; font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; font-weight: 500; }
+.pdf-preview-toolbar p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.4; }
+.pdf-preview-actions { display: flex; flex: 0 0 auto; gap: 10px; }
+.print-note {
+  display: block; width: min(calc(100% - 48px), 8.5in); min-height: 11in; margin: 28px auto 0; padding: .7in;
+  color: #111; background: #fff; box-shadow: 0 5px 24px rgb(42 48 45 / 12%);
+  font-family: Georgia, "Times New Roman", serif; font-size: 12pt; line-height: 1.55;
+}
+.print-note h1 { margin: 0 0 .35in; font-size: 24pt; line-height: 1.2; }
+.print-note p { min-height: 1.55em; margin: 0 0 .12in; white-space: pre-wrap; overflow-wrap: anywhere; }
+.print-note ul { margin: 0 0 .12in; padding-left: .28in; }
+.print-note li { margin: 0 0 .06in; white-space: pre-wrap; overflow-wrap: anywhere; }
 .data-view { width: min(100%, 920px); min-height: 100vh; margin-inline: auto; padding: calc(22px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); }
 .data-header { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 18px; margin-bottom: 30px; }
 .data-header .back-button { margin-top: 8px; }
@@ -116,6 +136,9 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
   .delete-note-button::before { content: "Delete"; font-size: .72rem; }
   .toolbar-actions { gap: 7px; }
   .pdf-button { width: 44px; padding: 0; font-size: .72rem; }
+  .pdf-preview-toolbar { align-items: stretch; flex-direction: column; gap: 12px; }
+  .pdf-preview-actions .secondary-button, .pdf-preview-actions .primary-button { flex: 1 1 0; }
+  .print-note { width: calc(100% - 24px); min-height: 0; margin-top: 12px; padding: 32px 24px; }
   .data-view { padding-inline: max(16px, env(safe-area-inset-left)); }
   .data-header { grid-template-columns: 1fr; gap: 8px; }
   .data-header .back-button { justify-self: start; margin-top: 0; }
@@ -127,13 +150,8 @@ h1 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size
   @page { margin: 0.7in; }
   body { color: #111; background: #fff; }
   #app { display: none; }
-  .print-note {
-    display: block; max-width: none; color: #111; background: #fff;
-    font-family: Georgia, "Times New Roman", serif; font-size: 12pt; line-height: 1.55;
-  }
-  .print-note h1 { margin: 0 0 0.35in; font-size: 24pt; line-height: 1.2; }
-  .print-note p { min-height: 1.55em; margin: 0 0 0.12in; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .print-note ul { margin: 0 0 0.12in; padding-left: 0.28in; }
-  .print-note li { margin: 0 0 0.06in; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .pdf-preview { position: static; overflow: visible; padding: 0; background: #fff; }
+  .pdf-preview-toolbar { display: none; }
+  .print-note { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

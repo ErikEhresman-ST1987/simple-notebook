@@ -20,13 +20,30 @@ export function createPrintLayout(note) {
   return { title: note.title.trim(), content };
 }
 
-export function printNote(note, documentRef = document, print = () => window.print()) {
-  if (typeof print !== "function") throw new Error("Printing is not available in this browser.");
-  documentRef.querySelector(".print-note")?.remove();
+export function openPrintPreview(note, { documentRef = document, print = () => window.print() } = {}) {
+  documentRef.querySelector(".pdf-preview")?.remove();
+  const preview = documentRef.createElement("section");
+  preview.className = "pdf-preview";
+  preview.setAttribute("role", "dialog");
+  preview.setAttribute("aria-modal", "true");
+  preview.setAttribute("aria-label", "PDF preview");
+
+  const toolbar = documentRef.createElement("header");
+  toolbar.className = "pdf-preview-toolbar";
+  const heading = documentRef.createElement("div");
+  heading.append(
+    element(documentRef, "h2", "PDF Preview"),
+    element(documentRef, "p", "Check the note below, then open the iPad print screen to save it as a PDF."),
+  );
+  const actions = documentRef.createElement("div");
+  actions.className = "pdf-preview-actions";
+  const closeButton = button(documentRef, "Close", "secondary-button");
+  const printButton = button(documentRef, "Print / Save PDF", "primary-button");
+  actions.append(closeButton, printButton);
+  toolbar.append(heading, actions);
 
   const article = documentRef.createElement("article");
   article.className = "print-note";
-  article.setAttribute("aria-hidden", "true");
   const layout = createPrintLayout(note);
 
   if (layout.title) article.append(element(documentRef, "h1", layout.title));
@@ -46,9 +63,18 @@ export function printNote(note, documentRef = document, print = () => window.pri
     article.append(list);
   }
 
-  documentRef.body.append(article);
-  try { print(); }
-  catch (error) { article.remove(); throw error; }
+  preview.append(toolbar, article);
+  documentRef.body.append(preview);
+  const previousOverflow = documentRef.body.style.overflow;
+  documentRef.body.style.overflow = "hidden";
+  const close = () => {
+    preview.remove();
+    documentRef.body.style.overflow = previousOverflow;
+  };
+  closeButton.addEventListener("click", close);
+  printButton.addEventListener("click", () => print());
+  printButton.focus({ preventScroll: true });
+  return close;
 }
 
 function appendSpans(documentRef, container, spans) {
@@ -65,5 +91,12 @@ function appendSpans(documentRef, container, spans) {
 function element(documentRef, tag, text) {
   const node = documentRef.createElement(tag);
   node.textContent = text;
+  return node;
+}
+
+function button(documentRef, text, className) {
+  const node = element(documentRef, "button", text);
+  node.type = "button";
+  node.className = className;
   return node;
 }

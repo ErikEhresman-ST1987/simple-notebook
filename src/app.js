@@ -2,7 +2,7 @@ import { getNote, listNotes, moveNoteToDeleted, putNote } from "./db.js";
 import { createDataView } from "./data-view.js";
 import { createEditor } from "./editor.js";
 import { createNote, displayTitle, previewText } from "./note-model.js";
-import { printNote } from "./pdf.js";
+import { openPrintPreview } from "./pdf.js";
 import { createPersistence } from "./persistence.js";
 
 const app = document.querySelector("#app");
@@ -109,6 +109,7 @@ async function renderEditor(noteId) {
 
   let draft = structuredClone(note);
   let editor;
+  let closePrintPreview = () => {};
   const persistence = createPersistence({
     save: async () => {
       draft.title = title.value;
@@ -143,7 +144,8 @@ async function renderEditor(noteId) {
     try {
       releaseEditorFocus();
       await persistence.flush();
-      printNote(draft);
+      closePrintPreview();
+      closePrintPreview = openPrintPreview(draft);
     } catch {
       status.textContent = "PDF export failed — note retained";
       status.dataset.state = "error";
@@ -173,6 +175,7 @@ async function renderEditor(noteId) {
   document.addEventListener("visibilitychange", onVisibility);
   window.addEventListener("pagehide", checkpoint);
   activeCleanup = async () => {
+    closePrintPreview();
     releaseEditorFocus();
     title.removeEventListener("input", persistence.markDirty);
     document.removeEventListener("visibilitychange", onVisibility);

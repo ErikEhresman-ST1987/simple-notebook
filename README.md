@@ -25,7 +25,7 @@ v0.2 added the verified data-safety increment: versioned whole-notebook JSON Bac
 
 v0.3 added verified simple bullet blocks through the existing structured document model and native editor boundary. Its iPad persistence hardening retained native Bold and prevents unsupported browser markup from silently omitting visible text.
 
-v0.4 adds individual-note PDF export through the native browser/iPad print workflow. Printable content is rendered from the structured note model behind a separate PDF boundary; no PDF dependency or alternate persistence path is introduced. v0.4.1 keeps that temporary print document available while iPadOS asynchronously builds its preview. This increment remains subject to real-iPad verification.
+v0.4 adds individual-note PDF export through the native browser/iPad print workflow. Printable content is rendered from the structured note model behind a separate PDF boundary; no PDF dependency or alternate persistence path is introduced. v0.4.2 uses a visible in-app document preview before invoking iPadOS printing so WebKit has completed layout before it builds the native print preview. This increment remains subject to real-iPad verification.
 
 ## Architecture and ownership
 
